@@ -1,5 +1,5 @@
 """Setup script."""
-from setuptools import setup
+from setuptools import setup, find_packages
 
 from django_mutpy import __version__
 
@@ -12,7 +12,7 @@ setup(
     author_email='philipp.hossner@gmail.com',
     url='https://github.com/phihos/django-mutpy',
     zip_safe=False,
-    packages=['django_mutpy'],
+    packages=find_packages(),
     dependency_links=['git+https://github.com/phihos/mutpy.git@v0.4.1#egg=mutpy-0.4.1'],
     install_requires=[
         'mutpy>=0.4.1',
