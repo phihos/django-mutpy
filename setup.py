@@ -3,9 +3,6 @@ from setuptools import setup
 
 from django_mutpy import __version__
 
-with open('requirements.txt') as f:
-    requirements = f.read().splitlines()
-
 setup(
     name='django-mutpy',
     version='.'.join(str(x) for x in __version__),
