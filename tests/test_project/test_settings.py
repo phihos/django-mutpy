@@ -6,6 +6,7 @@ SECRET_KEY = 'fake-key'
 INSTALLED_APPS = [
     'test_project',
     'test_app',
+    'test_app_db',
     'django_mutpy'
 ]
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
