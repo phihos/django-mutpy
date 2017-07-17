@@ -9,8 +9,10 @@ from unittest import TestCase, mock
 from unittest.mock import MagicMock
 
 from django.test import SimpleTestCase
+
 from django_mutpy.management.commands.muttest import Command
 from django_mutpy.mutpy_runner import run_mutpy_on_app
+from django_mutpy.utils import list_all_modules_in_package
 
 
 class Devnull(object):
@@ -112,6 +114,10 @@ class MuttestCommandTest(SimpleTestCase):
 
 
 # noinspection PyUnresolvedReferences
+@mock.patch('django_mutpy.mutpy_runner.teardown_databases')
+@mock.patch('django_mutpy.mutpy_runner.setup_databases')
+@mock.patch('django_mutpy.mutpy_runner.teardown_test_environment')
+@mock.patch('django_mutpy.mutpy_runner.setup_test_environment')
 @mock.patch('django_mutpy.mutpy_runner.build_controller')
 @mock.patch('django_mutpy.mutpy_runner.build_parser')
 @mock.patch('django_mutpy.mutpy_runner.list_all_modules_in_package',
@@ -119,7 +125,7 @@ class MuttestCommandTest(SimpleTestCase):
 class MutPyRunnerTest(TestCase):
     """Unit tests for the mutpy_runner module."""
 
-    def test_delegation(self, list_all_modules_in_package, build_parser, build_controller):
+    def test_delegation(self, list_all_modules_in_package, build_parser, *_):
         """Check correct delegation to MutPy."""
         # given
         arg_parser = self.mock_build_parser(build_parser)
@@ -141,20 +147,59 @@ class MutPyRunnerTest(TestCase):
         return arg_parser
 
 
+class UtilsTest(TestCase):
+    """Unit tests for utility functions."""
+
+    def test_list_all_modules_in_package(self):
+        """Run 'list_all_modules_in_package' against 'test_app' and check result."""
+        # when
+        all_modules = list_all_modules_in_package('test_app', ['tests'])
+        # then
+        self.assertEqual(all_modules, ['test_app.calculator', 'test_app.models'])
+
+
+class DjangoCompat(TestCase):
+    """Unit tests for the Django compat module."""
+
+    def test_setup_databases(self):
+        """Check if the correct 'setup_databases' is used."""
+        from django_mutpy.django_compat import setup_databases
+        self.assertTrue(callable(setup_databases))
+
+    def test_teardown_databases(self):
+        """Check if the correct 'teardown_databases' is used."""
+        from django_mutpy.django_compat import teardown_databases
+        self.assertTrue(callable(teardown_databases))
+
+
 class SystemTest(SimpleTestCase):
     """End-to-end tests."""
 
     def run_muttest_manage_py_command(self, args):
         """Invoke the 'manage.py muttest...' command with arguments."""
         manage_file = __import__('manage').__file__
-        output = subprocess.check_output([sys.executable, manage_file, 'muttest'] + args)
-        return output.decode('utf-8')
+        try:
+            output = subprocess.check_output([sys.executable, manage_file, 'muttest'] + args)
+            exit_code = 0
+        except subprocess.CalledProcessError as e:
+            output = e.output
+            exit_code = e.returncode
+        return output.decode('utf-8'), exit_code
 
     def test_output(self):
         """Check the output when running against the test_app."""
         # when
-        output = self.run_muttest_manage_py_command(['test_app'])
+        output, exit_code = self.run_muttest_manage_py_command(['test_app'])
         # then
+        self.assertEqual(exit_code, 0)
         self.assertIn('AOR test_app.calculator', output)
         self.assertIn('all: 3', output)
         self.assertIn('survived: 3', output)
+
+    def test_run_with_db_tests(self):
+        """Test if the Django database test isolation is properly set up."""
+        # when
+        output, exit_code = self.run_muttest_manage_py_command(['test_app_db'])
+        # then
+        self.assertEqual(exit_code, 0)
+        self.assertNotIn('[*] Tests failed:', output)
