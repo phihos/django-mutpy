@@ -12,6 +12,7 @@ from django.test import SimpleTestCase
 
 from django_mutpy.management.commands.muttest import Command
 from django_mutpy.mutpy_runner import run_mutpy_on_app
+from django_mutpy.utils import list_all_modules_in_package
 
 
 class Devnull(object):
@@ -144,6 +145,31 @@ class MutPyRunnerTest(TestCase):
         arg_parser.parse_args = MagicMock(return_value=None)
         build_parser.return_value = arg_parser
         return arg_parser
+
+
+class UtilsTest(TestCase):
+    """Unit tests for utility functions."""
+
+    def test_list_all_modules_in_package(self):
+        """Run 'list_all_modules_in_package' against 'test_app' and check result."""
+        # when
+        all_modules = list_all_modules_in_package('test_app', ['tests'])
+        # then
+        self.assertEqual(all_modules, ['test_app.calculator', 'test_app.models'])
+
+
+class DjangoCompat(TestCase):
+    """Unit tests for the Django compat module."""
+
+    def test_setup_databases(self):
+        """Check if the correct 'setup_databases' is used."""
+        from django_mutpy.django_compat import setup_databases
+        self.assertTrue(callable(setup_databases))
+
+    def test_teardown_databases(self):
+        """Check if the correct 'teardown_databases' is used."""
+        from django_mutpy.django_compat import teardown_databases
+        self.assertTrue(callable(teardown_databases))
 
 
 class SystemTest(SimpleTestCase):
