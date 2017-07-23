@@ -8,7 +8,7 @@ Django integration for the mutation testing framework MutPy.
 MutPy is a mutation test framework for Python. It basically seeds a bug into your code and then runs your unit tests to see if they find it.
 Mutation testing helps to identify flaws in your tests. Because if your tests can not uncover obvious bugs, they will also not uncover complex ones.
 
-This Django apps eases the integration of MutPy into your Django project. It takes care of setting up the Django environment for the tests and finding the unit tests and the production code.
+This Django app eases the integration of MutPy into your Django project. It takes care of setting up the Django environment for the tests and finding the unit tests and the production code.
 
 ## Requirements
 
