@@ -2,6 +2,7 @@
 
 from django.conf import settings
 from django.core.management import BaseCommand, CommandError
+
 from django_mutpy.mutpy_runner import run_mutpy_on_app
 
 
@@ -22,9 +23,10 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         """Define cmd arguments."""
         parser.add_argument('app', nargs='+', type=str)
+        parser.add_argument('--modules', nargs='+', type=str, default=None)
 
     def handle(self, *args, **options):
         """Run MutPy against the provided apps."""
         check_apps(options['app'])
         for app in options['app']:
-            run_mutpy_on_app(app)
+            run_mutpy_on_app(app, include_list=options['modules'])

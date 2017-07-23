@@ -38,5 +38,5 @@ INSTALLED_APPS = [
 Run
 
 ```
-python manage.py muttest <app1> <app2> ...
+python manage.py muttest <app1> <app2> ... [--modules <list of modules to include>]
 ```

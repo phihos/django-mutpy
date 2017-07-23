@@ -7,10 +7,10 @@ from django_mutpy.django_compat import teardown_databases, setup_databases
 from django_mutpy.utils import list_all_modules_in_package
 
 
-def run_mutpy_on_app(app, skip=('migrations', 'tests')):
+def run_mutpy_on_app(app, include_list=None, skip=('migrations', 'tests')):
     """Let MutPy run mutations tests on a single Django app."""
     old_config = setup_django_test_env()
-    productive_modules = list_all_modules_in_package(app, skip=skip)
+    productive_modules = list_all_modules_in_package(app, include_list=include_list, skip=skip)
     unittest_module = app + '.tests'
     run_mutpy(productive_modules, unittest_module)
     teardown_django_test_env(old_config)

@@ -101,7 +101,7 @@ class MuttestCommandTest(SimpleTestCase):
         # when
         self.run_command(['app1'])
         # then
-        run_mutpy_on_app.assert_called_once_with('app1')
+        run_mutpy_on_app.assert_called_once_with('app1', include_list=None)
 
     @mock.patch('django_mutpy.management.commands.muttest.settings', INSTALLED_APPS=['app1', 'app2'])
     def test_delgate_command_with_two_apps(self, settings, run_mutpy_on_app):
@@ -109,8 +109,8 @@ class MuttestCommandTest(SimpleTestCase):
         # when
         self.run_command(['app1', 'app2'])
         # then
-        run_mutpy_on_app.assert_any_call('app1')
-        run_mutpy_on_app.assert_any_call('app2')
+        run_mutpy_on_app.assert_any_call('app1', include_list=None)
+        run_mutpy_on_app.assert_any_call('app2', include_list=None)
 
 
 # noinspection PyUnresolvedReferences
@@ -132,7 +132,7 @@ class MutPyRunnerTest(TestCase):
         # when
         run_mutpy_on_app('app1')
         # then
-        list_all_modules_in_package.assert_called_once_with('app1', skip=('migrations', 'tests'))
+        list_all_modules_in_package.assert_called_once_with('app1', include_list=None, skip=('migrations', 'tests'))
         arg_parser.parse_args.assert_called_once_with([
             '--target', 'app1.some_module', 'app1.some_other_module',
             '--unit-test', 'app1.tests',
@@ -153,9 +153,25 @@ class UtilsTest(TestCase):
     def test_list_all_modules_in_package(self):
         """Run 'list_all_modules_in_package' against 'test_app' and check result."""
         # when
-        all_modules = list_all_modules_in_package('test_app', ['tests'])
+        all_modules = list_all_modules_in_package('test_app', include_list=None, skip=['tests'])
         # then
-        self.assertEqual(all_modules, ['test_app.calculator', 'test_app.models'])
+        self.assertEqual(all_modules, ['test_app.calculator',
+                                       'test_app.models',
+                                       'test_app.nested.nested.nested_module',
+                                       'test_app.nested.nested_module'])
+
+    def test_with_include_list(self):
+        """Run 'list_all_modules_in_package' against 'test_app' and check result."""
+        # when
+        all_modules = list_all_modules_in_package('test_app',
+                                                  include_list=[
+                                                      'test_app.models',
+                                                      'test_app.nested.nested.nested_module'
+                                                  ],
+                                                  skip=['tests'])
+        # then
+        self.assertEqual(all_modules, ['test_app.models',
+                                       'test_app.nested.nested.nested_module'])
 
 
 class DjangoCompat(TestCase):
@@ -195,6 +211,16 @@ class SystemTest(SimpleTestCase):
         self.assertIn('AOR test_app.calculator', output)
         self.assertIn('all: 3', output)
         self.assertIn('survived: 3', output)
+
+    def test_output_with_modules_param(self):
+        """Check the output when running against the test_app."""
+        # when
+        output, exit_code = self.run_muttest_manage_py_command(
+            ['test_app', '--modules', 'test_app.nested.nested.nested_module']
+        )
+        # then
+        self.assertEqual(exit_code, 0)
+        self.assertIn('all: 0', output)
 
     def test_run_with_db_tests(self):
         """Test if the Django database test isolation is properly set up."""
