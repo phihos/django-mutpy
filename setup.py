@@ -9,7 +9,7 @@ setup(
     license='Apache 2.0',
     description='Mutation testing with MutPy for Django.',
     author='Philipp Hossner',
-    author_email='philipp.hossner@gmail.com',
+    author_email='philipp.hossner@posteo.de',
     url='https://github.com/phihos/django-mutpy',
     zip_safe=False,
     packages=find_packages(),
