@@ -13,7 +13,7 @@ This Django app eases the integration of MutPy into your Django project. It take
 ## Requirements
 
   * Python >= 3.3
-  * MutPy >= 0.4.1 (currently installed from git)
+  * MutPy >= 0.5.1
 
 ## Installation
 

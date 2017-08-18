@@ -13,9 +13,8 @@ setup(
     url='https://github.com/phihos/django-mutpy',
     zip_safe=False,
     packages=find_packages(),
-    dependency_links=['git+https://github.com/phihos/mutpy.git@v0.4.1#egg=mutpy-0.4.1'],
     install_requires=[
-        'mutpy>=0.4.1',
+        'mutpy>=0.5.1',
         'Django>=1.8'
     ],
     classifiers=[
