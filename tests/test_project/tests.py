@@ -153,7 +153,7 @@ class UtilsTest(TestCase):
     def test_list_all_modules_in_package(self):
         """Run 'list_all_modules_in_package' against 'test_app' and check result."""
         # when
-        all_modules = list_all_modules_in_package('test_app', include_list=None, skip=['tests'])
+        all_modules = list_all_modules_in_package('test_app', include_list=None, skip=['tests', 'migrations'])
         # then
         self.assertEqual(all_modules, ['test_app.calculator',
                                        'test_app.models',
