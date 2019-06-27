@@ -18,7 +18,7 @@ finding the unit tests and the production code.
 Requirements
 ------------
 
--  Python >= 3.3
+-  Python >= 3.4
 -  MutPy >= 0.5.1
 
 Installation
