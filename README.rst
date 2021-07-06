@@ -59,10 +59,6 @@ Run
 
     python manage.py muttest <app1> <app2> ... [--modules <list of modules to include>]
 
-Note that dotted path entries to AppConfig classes in the `INSTALLED_APPS` is not yet
-supported and a valid app name is expected (which must be listed in the installed apps).
-See the `GitHub Issue <https://github.com/phihos/django-mutpy/issues/3>`_ for details.
-
 .. _MutPy: https://github.com/mutpy/mutpy
 .. |Build Status| image:: https://travis-ci.org/phihos/django-mutpy.svg?branch=master
    :target: https://travis-ci.org/phihos/django-mutpy
