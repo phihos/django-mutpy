@@ -59,32 +59,38 @@ class MuttestCommandTest(SimpleTestCase):
         sys.stderr = Devnull()
         sys.stdout = Devnull()
 
-    @mock.patch('django_mutpy.management.commands.muttest.settings', INSTALLED_APPS=['app1', 'app2'])
-    def test_wrong_apps(self, run_mutpy_on_app, settings):
+    def test_wrong_apps(self, run_mutpy_on_app):
         """Try to execute the command on non-existing apps."""
-        # when
-        with self.assertRaises(SystemExit) as cm:
-            self.run_command(['non_existing_app'])
-            # then
-        self.assertEqual(cm.exception.code, 1)
+        with self.modify_settings(
+                INSTALLED_APPS={"prepend": ['app1', 'app2']}
+        ):
+            # when
+            with self.assertRaises(SystemExit) as cm:
+                self.run_command(['non_existing_app'])
+                # then
+            self.assertEqual(cm.exception.code, 1)
 
-    @mock.patch('django_mutpy.management.commands.muttest.settings', INSTALLED_APPS=['app1', 'app2'])
-    def test_partially_wrong_apps(self, settings, run_mutpy_on_app):
+    def test_partially_wrong_apps(self, run_mutpy_on_app):
         """Try to execute the command on an existing and a non-existing app."""
-        # when
-        with self.assertRaises(SystemExit) as cm:
-            self.run_command(['app2', 'non_existing_app'])
-            # then
-        self.assertEqual(cm.exception.code, 1)
+        with self.modify_settings(
+                INSTALLED_APPS={"prepend": ['app1', 'app2']}
+        ):
+            # when
+            with self.assertRaises(SystemExit) as cm:
+                self.run_command(['app2', 'non_existing_app'])
+                # then
+            self.assertEqual(cm.exception.code, 1)
 
-    @mock.patch('django_mutpy.management.commands.muttest.settings', INSTALLED_APPS=['app1', 'app2'])
-    def test_too_many_apps(self, settings, run_mutpy_on_app):
+    def test_too_many_apps(self, run_mutpy_on_app):
         """Try to execute the command on all existing and a non-existing app."""
-        # when
-        with self.assertRaises(SystemExit) as cm:
-            self.run_command(['app1', 'app2', 'non_existing_app'])
-            # then
-        self.assertEqual(cm.exception.code, 1)
+        with self.modify_settings(
+                INSTALLED_APPS={"prepend": ['app1', 'app2']}
+        ):
+            # when
+            with self.assertRaises(SystemExit) as cm:
+                self.run_command(['app1', 'app2', 'non_existing_app'])
+                # then
+            self.assertEqual(cm.exception.code, 1)
 
     def test_no_apps(self, run_mutpy_on_app):
         """Try to execute the command with no apps."""
@@ -95,22 +101,36 @@ class MuttestCommandTest(SimpleTestCase):
             # then
         self.assertEqual(cm.exception.code, 2)
 
-    @mock.patch('django_mutpy.management.commands.muttest.settings', INSTALLED_APPS=['app1', 'app2'])
-    def test_delegate_command_with_one_app(self, settings, run_mutpy_on_app):
+    def test_delegate_command_with_one_app(self, run_mutpy_on_app):
         """Check correct delegation to 'run_mutpy_on_app."""
-        # when
-        self.run_command(['app1'])
-        # then
-        run_mutpy_on_app.assert_called_once_with('app1', include_list=None)
+        with self.modify_settings(
+                INSTALLED_APPS={"prepend": ['app1', 'app2']}
+        ):
+            # when
+            self.run_command(['app1'])
+            # then
+            run_mutpy_on_app.assert_called_once_with('app1', include_list=None)
 
-    @mock.patch('django_mutpy.management.commands.muttest.settings', INSTALLED_APPS=['app1', 'app2'])
-    def test_delgate_command_with_two_apps(self, settings, run_mutpy_on_app):
+    def test_delegate_command_with_two_apps(self, run_mutpy_on_app):
         """Check correct delegation to 'run_mutpy_on_app with two apps."""
-        # when
-        self.run_command(['app1', 'app2'])
-        # then
-        run_mutpy_on_app.assert_any_call('app1', include_list=None)
-        run_mutpy_on_app.assert_any_call('app2', include_list=None)
+        with self.modify_settings(
+                INSTALLED_APPS={"prepend": ['app1', 'app2']}
+        ):
+            # when
+            self.run_command(['app1', 'app2'])
+            # then
+            run_mutpy_on_app.assert_any_call('app1', include_list=None)
+            run_mutpy_on_app.assert_any_call('app2', include_list=None)
+
+    def test_delegate_command_with_one_appconfig_entry(self, run_mutpy_on_app):
+        """Check correct delegation to 'run_mutpy_on_app."""
+        with self.modify_settings(
+                INSTALLED_APPS={"prepend": ['app1.apps.App1Config']}
+        ):
+            # when
+            self.run_command(['app1'])
+            # then
+            run_mutpy_on_app.assert_called_once_with('app1', include_list=None)
 
 
 # noinspection PyUnresolvedReferences

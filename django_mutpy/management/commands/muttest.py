@@ -1,16 +1,16 @@
 """Contains the 'manage.py muttest' command."""
 
+from django.apps import apps
 from django.conf import settings
 from django.core.management import BaseCommand, CommandError
 
 from django_mutpy.mutpy_runner import run_mutpy_on_app
 
 
-def check_apps(apps):
+def check_apps(app_options):
     """Check if a list of apps is entirely contained in the list of installed apps."""
-    for app in apps:
-        installed_apps = settings.INSTALLED_APPS
-        if app not in installed_apps:
+    for app in app_options:
+        if not apps.is_installed(app):
             raise CommandError('App %s not contained in INSTALLED_APPS %s'
                                % (app, settings.INSTALLED_APPS))
 
