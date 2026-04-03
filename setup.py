@@ -19,11 +19,12 @@ setup(
     author='Philipp Hossner',
     author_email='philipp.hossner@posteo.de',
     url='https://github.com/phihos/django-mutpy',
+    python_requires='>=3.9',
     zip_safe=False,
     packages=find_packages(),
     install_requires=[
         'mutpy>=0.5.1',
-        'Django>=2.0'
+        'Django>=3.2'
     ],
     classifiers=[
         'Environment :: Web Environment',
