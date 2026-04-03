@@ -1,5 +1,7 @@
 """Contains the 'manage.py muttest' command."""
 
+import shlex
+
 from django.conf import settings
 from django.core.management import BaseCommand, CommandError
 
@@ -24,9 +26,19 @@ class Command(BaseCommand):
         """Define cmd arguments."""
         parser.add_argument('app', nargs='+', type=str)
         parser.add_argument('--modules', nargs='+', type=str, default=None)
+        parser.add_argument(
+            '--mutpy-args', type=str, default=None,
+            help='Additional arguments to pass to MutPy as a single quoted string '
+                 '(e.g. --mutpy-args="--report-html /tmp/report --coverage").',
+        )
 
     def handle(self, *args, **options):
         """Run MutPy against the provided apps."""
         check_apps(options['app'])
+        extra_args = shlex.split(options['mutpy_args']) if options['mutpy_args'] else None
         for app in options['app']:
-            run_mutpy_on_app(app, include_list=options['modules'])
+            run_mutpy_on_app(
+                app,
+                include_list=options['modules'],
+                extra_args=extra_args,
+            )
