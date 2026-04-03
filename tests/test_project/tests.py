@@ -101,7 +101,7 @@ class MuttestCommandTest(SimpleTestCase):
         # when
         self.run_command(['app1'])
         # then
-        run_mutpy_on_app.assert_called_once_with('app1', include_list=None)
+        run_mutpy_on_app.assert_called_once_with('app1', include_list=None, extra_args=None)
 
     @mock.patch('django_mutpy.management.commands.muttest.settings', INSTALLED_APPS=['app1', 'app2'])
     def test_delgate_command_with_two_apps(self, settings, run_mutpy_on_app):
@@ -109,8 +109,18 @@ class MuttestCommandTest(SimpleTestCase):
         # when
         self.run_command(['app1', 'app2'])
         # then
-        run_mutpy_on_app.assert_any_call('app1', include_list=None)
-        run_mutpy_on_app.assert_any_call('app2', include_list=None)
+        run_mutpy_on_app.assert_any_call('app1', include_list=None, extra_args=None)
+        run_mutpy_on_app.assert_any_call('app2', include_list=None, extra_args=None)
+
+    @mock.patch('django_mutpy.management.commands.muttest.settings', INSTALLED_APPS=['app1', 'app2'])
+    def test_delegate_command_with_mutpy_args(self, settings, run_mutpy_on_app):
+        """Check that --mutpy-args are passed through to run_mutpy_on_app."""
+        # when
+        self.run_command(['app1', '--mutpy-args', '--coverage --quiet'])
+        # then
+        run_mutpy_on_app.assert_called_once_with(
+            'app1', include_list=None, extra_args=['--coverage', '--quiet'],
+        )
 
 
 # noinspection PyUnresolvedReferences
@@ -137,6 +147,20 @@ class MutPyRunnerTest(TestCase):
             '--target', 'app1.some_module', 'app1.some_other_module',
             '--unit-test', 'app1.tests',
             '--show-mutants',
+        ])
+
+    def test_delegation_with_extra_args(self, list_all_modules_in_package, build_parser, *_):
+        """Check that extra_args are appended to the MutPy arguments."""
+        # given
+        arg_parser = self.mock_build_parser(build_parser)
+        # when
+        run_mutpy_on_app('app1', extra_args=['--coverage', '--quiet'])
+        # then
+        arg_parser.parse_args.assert_called_once_with([
+            '--target', 'app1.some_module', 'app1.some_other_module',
+            '--unit-test', 'app1.tests',
+            '--show-mutants',
+            '--coverage', '--quiet',
         ])
 
     def mock_build_parser(self, build_parser):
