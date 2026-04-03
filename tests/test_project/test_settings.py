@@ -18,4 +18,4 @@ DATABASES = {
     }
 }
 
-MIDDLEWARE_CLASSES = []
+MIDDLEWARE = []

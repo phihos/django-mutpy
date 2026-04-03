@@ -1,1 +1,1 @@
-"""This package contains DJango management commands."""
+"""This package contains Django management commands."""
