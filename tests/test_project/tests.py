@@ -198,20 +198,6 @@ class UtilsTest(TestCase):
                                        'test_app.nested.nested.nested_module'])
 
 
-class DjangoCompat(TestCase):
-    """Unit tests for the Django compat module."""
-
-    def test_setup_databases(self):
-        """Check if the correct 'setup_databases' is used."""
-        from django_mutpy.django_compat import setup_databases
-        self.assertTrue(callable(setup_databases))
-
-    def test_teardown_databases(self):
-        """Check if the correct 'teardown_databases' is used."""
-        from django_mutpy.django_compat import teardown_databases
-        self.assertTrue(callable(teardown_databases))
-
-
 class SystemTest(SimpleTestCase):
     """End-to-end tests."""
 

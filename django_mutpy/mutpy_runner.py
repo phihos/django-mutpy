@@ -1,9 +1,7 @@
 """Contains functions that directly interact with MutPy."""
 
-from django.test.utils import setup_test_environment, teardown_test_environment
+from django.test.utils import setup_databases, setup_test_environment, teardown_databases, teardown_test_environment
 from mutpy.commandline import build_controller, build_parser
-
-from django_mutpy.django_compat import teardown_databases, setup_databases
 from django_mutpy.utils import list_all_modules_in_package
 
 
