@@ -38,6 +38,9 @@ jobs:
           - python-version: "3.9"
             django-version: "5.2"
 
+    # mutpy uses importlib.find_loader which was removed in Python 3.12
+    continue-on-error: ${{ matrix.python-version == '3.12' || matrix.python-version == '3.13' }}
+
     steps:
       - uses: actions/checkout@v4
 
