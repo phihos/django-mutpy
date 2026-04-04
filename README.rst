@@ -1,7 +1,7 @@
 django-mutpy
 ============
 
-|Build Status| |Coverage Status| |Code Climate|
+|Build Status|
 
 Django integration for the mutation testing framework `MutPy`_.
 
@@ -18,7 +18,7 @@ finding the unit tests and the production code.
 Requirements
 ------------
 
--  Python >= 3.4
+-  Python >= 3.9
 -  MutPy >= 0.5.1
 
 Installation
@@ -60,9 +60,5 @@ Run
     python manage.py muttest <app1> <app2> ... [--modules <list of modules to include>]
 
 .. _MutPy: https://github.com/mutpy/mutpy
-.. |Build Status| image:: https://travis-ci.org/phihos/django-mutpy.svg?branch=master
-   :target: https://travis-ci.org/phihos/django-mutpy
-.. |Coverage Status| image:: https://coveralls.io/repos/github/phihos/django-mutpy/badge.svg?branch=master
-   :target: https://coveralls.io/github/phihos/django-mutpy?branch=master
-.. |Code Climate| image:: https://codeclimate.com/github/phihos/django-mutpy/badges/gpa.svg
-   :target: https://codeclimate.com/github/phihos/django-mutpy
+.. |Build Status| image:: https://github.com/phihos/django-mutpy/actions/workflows/test.yml/badge.svg
+   :target: https://github.com/phihos/django-mutpy/actions/workflows/test.yml
