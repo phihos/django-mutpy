@@ -1,5 +1,18 @@
 """Contains functions that directly interact with MutPy."""
 
+import importlib
+import importlib.util
+
+# mutpy uses importlib.find_loader which was removed in Python 3.12.
+# Provide a shim so that mutpy.test_runners can be imported on modern Pythons.
+if not hasattr(importlib, 'find_loader'):
+    def _find_loader_shim(name, path=None):
+        try:
+            return importlib.util.find_spec(name, path)
+        except (ModuleNotFoundError, ValueError):
+            return None
+    importlib.find_loader = _find_loader_shim
+
 from django.test.utils import (setup_databases, setup_test_environment,
                                teardown_databases, teardown_test_environment)
 from mutpy.commandline import build_controller, build_parser
