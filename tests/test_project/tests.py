@@ -114,6 +114,14 @@ class MuttestCommandTest(SimpleTestCase):
             'app1', include_list=None, extra_args=['--coverage', '--quiet'],
         )
 
+    def test_delegate_command_with_appconfig_in_installed_apps(self, run_mutpy_on_app):
+        """Check that apps registered via AppConfig dotted path are accepted."""
+        # test_app is registered as 'test_app.apps.TestAppConfig' in settings
+        # when
+        self.run_command(['test_app'])
+        # then
+        run_mutpy_on_app.assert_called_once_with('test_app', include_list=None, extra_args=None)
+
 
 # noinspection PyUnresolvedReferences
 @mock.patch('django_mutpy.mutpy_runner.teardown_databases')
@@ -171,7 +179,8 @@ class UtilsTest(TestCase):
         # when
         all_modules = list_all_modules_in_package('test_app', include_list=None, skip=['tests', 'migrations'])
         # then
-        self.assertEqual(all_modules, ['test_app.calculator',
+        self.assertEqual(all_modules, ['test_app.apps',
+                                       'test_app.calculator',
                                        'test_app.models',
                                        'test_app.nested.nested.nested_module',
                                        'test_app.nested.nested_module'])

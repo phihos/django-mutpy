@@ -5,7 +5,7 @@ import os
 SECRET_KEY = 'fake-key'
 INSTALLED_APPS = [
     'test_project',
-    'test_app',
+    'test_app.apps.TestAppConfig',
     'test_app_db',
     'django_mutpy'
 ]
