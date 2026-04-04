@@ -1,7 +1,6 @@
 """Tests do not actually test django-mutpy, but are run by the tests for testing mutation testing (testception)."""
 
 from django.test import TestCase
-
 from test_app_db.models import SingletonModel
 
 
