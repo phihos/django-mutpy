@@ -24,7 +24,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         'mutpy>=0.5.1',
-        'Django>=3.2'
+        'Django>=4.2'
     ],
     classifiers=[
         'Environment :: Web Environment',
@@ -35,5 +35,9 @@ setup(
         'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3.11',
         'Framework :: Django',
+        'Framework :: Django :: 4.2',
+        'Framework :: Django :: 5.0',
+        'Framework :: Django :: 5.1',
+        'Framework :: Django :: 5.2',
     ]
 )
