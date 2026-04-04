@@ -3,8 +3,6 @@
 import subprocess
 import sys
 from argparse import ArgumentParser
-from contextlib import contextmanager
-from io import StringIO
 from unittest import TestCase, mock
 from unittest.mock import MagicMock
 
@@ -25,18 +23,6 @@ class Devnull(object):
     def flush(self):
         """Do nothing."""
         pass
-
-
-@contextmanager
-def captured_output():
-    """Capture stdout and stderr."""
-    new_out, new_err = StringIO(), StringIO()
-    old_out, old_err = sys.stdout, sys.stderr
-    try:
-        sys.stdout, sys.stderr = new_out, new_err
-        yield sys.stdout.getvalue().strip(), sys.stderr.getvalue().strip()
-    finally:
-        sys.stdout, sys.stderr = old_out, old_err
 
 
 @mock.patch('django_mutpy.management.commands.muttest.run_mutpy_on_app')
