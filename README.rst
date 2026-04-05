@@ -19,6 +19,7 @@ Requirements
 ------------
 
 -  Python >= 3.9
+-  Django 4.2, 5.0, 5.1, or 5.2
 -  MutPy >= 0.5.1
 
 Installation
@@ -50,6 +51,9 @@ Then add django\_mutpy to the list of installed apps.
       ...
       ]
 
+AppConfig dotted paths (e.g. ``'myapp.apps.MyAppConfig'``) in
+``INSTALLED_APPS`` are also supported.
+
 Usage
 -----
 
@@ -58,6 +62,14 @@ Run
 ::
 
     python manage.py muttest <app1> <app2> ... [--modules <list of modules to include>]
+        [--mutpy-args "<extra mutpy flags>"]
+
+Use ``--modules`` to limit mutation testing to specific modules within an app.
+
+Use ``--mutpy-args`` to pass additional flags directly to MutPy as a single
+quoted string, for example::
+
+    python manage.py muttest myapp --mutpy-args="--report-html /tmp/report --coverage"
 
 .. _MutPy: https://github.com/mutpy/mutpy
 .. |Build Status| image:: https://github.com/phihos/django-mutpy/actions/workflows/test.yml/badge.svg
